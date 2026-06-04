@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+*.pkl
+*.bin
+*.sqlite
+*.db
+uploads/
+chroma_db/
+.env
+.DS_Store
