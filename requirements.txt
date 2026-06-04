@@ -9,5 +9,5 @@ chromadb
 pypdf
 python-docx
 python-pptx
-
+sentence_transformers
 google-generativeai
