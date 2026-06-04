@@ -5,9 +5,7 @@ requests
 pydantic
 python-multipart
 
-sentence-transformers
 chromadb
-
 pypdf
 python-docx
 python-pptx
