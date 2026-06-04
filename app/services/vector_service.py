@@ -1,8 +1,7 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-client = chromadb.PersistentClient(path="./chroma_db")
-
+client = chromadb.Client()
 collection = client.get_or_create_collection(
     name="documents"
 )
