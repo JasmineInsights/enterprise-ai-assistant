@@ -35,6 +35,7 @@ st.markdown("""
 
 # ---------------- SIDEBAR ----------------
 with st.sidebar:
+
     st.title("📁 Document Hub")
 
     uploaded_file = st.file_uploader(
@@ -43,7 +44,9 @@ with st.sidebar:
     )
 
     if uploaded_file:
+
         if st.button("Upload"):
+
             files = {
                 "file": (
                     uploaded_file.name,
@@ -52,13 +55,25 @@ with st.sidebar:
                 )
             }
 
-            res = requests.post(
-                f"{API_URL}/upload",
-                files=files
-            )
+            try:
 
-            st.success("Uploaded Successfully 🚀")
-            st.json(res.json())
+                res = requests.post(
+                    f"{API_URL}/upload",
+                    files=files
+                )
+
+                st.success("Upload Request Sent 🚀")
+
+                st.write("Status Code:", res.status_code)
+                st.write("Response Text:", res.text)
+
+                try:
+                    st.json(res.json())
+                except Exception as e:
+                    st.error(f"JSON Error: {e}")
+
+            except Exception as e:
+                st.error(f"Upload Error: {e}")
 
 # ---------------- HEADER ----------------
 st.markdown(
@@ -76,36 +91,45 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 # ---------------- INPUT BOX ----------------
-question = st.text_input("Ask anything from your documents...")
+question = st.text_input(
+    "Ask anything from your documents..."
+)
 
 col1, col2 = st.columns([1, 5])
 
 with col1:
     ask = st.button("🚀 Ask")
 
+# ---------------- CHAT ----------------
 if ask and question:
 
-    res = requests.post(
-        f"{API_URL}/chat",
-        json={"question": question}
-    )
-
-    st.write("Status Code:", res.status_code)
-    st.write("Response Text:", res.text)
-
     try:
-        data = res.json()
 
-        st.session_state.chat_history.append(
-            {
-                "q": question,
-                "a": data["answer"],
-                "s": data["sources"]
-            }
+        res = requests.post(
+            f"{API_URL}/chat",
+            json={"question": question}
         )
 
+        st.write("Status Code:", res.status_code)
+        st.write("Response Text:", res.text)
+
+        try:
+
+            data = res.json()
+
+            st.session_state.chat_history.append(
+                {
+                    "q": question,
+                    "a": data.get("answer", ""),
+                    "s": data.get("sources", [])
+                }
+            )
+
+        except Exception as e:
+            st.error(f"JSON Error: {e}")
+
     except Exception as e:
-        st.error(f"JSON Error: {e}")
+        st.error(f"Request Error: {e}")
 
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
