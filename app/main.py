@@ -1,9 +1,7 @@
 from fastapi import FastAPI
-from app.routes.upload import router as upload_router
-from app.routes.search import router as search_router
-from app.routes.chat import router as chat_router
-from app.routes.documents import router as documents_router
 from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="Enterprise AI Knowledge Assistant")
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,7 +10,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app = FastAPI(title="Enterprise AI Knowledge Assistant")
+
+from app.routes.upload import router as upload_router
+from app.routes.search import router as search_router
+from app.routes.chat import router as chat_router
+from app.routes.documents import router as documents_router
 
 app.include_router(upload_router)
 app.include_router(search_router)
