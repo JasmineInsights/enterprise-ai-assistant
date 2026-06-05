@@ -105,6 +105,7 @@ col1, col2 = st.columns([1, 5])
 with col1:
     ask = st.button("🚀 Ask")
 
+
 # ---------------- CHAT ----------------
 if ask and question:
 
@@ -129,10 +130,10 @@ if ask and question:
             )
 
         else:
-            st.error("Unable to get response from AI Assistant.")
+            st.error(f"Backend Error: {res.status_code}")
 
-    except Exception:
-        st.error("Unable to get response from AI Assistant.")
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
