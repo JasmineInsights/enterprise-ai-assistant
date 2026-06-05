@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "https://enterprise-ai-assistant-43az.onrender.com/chat"
+API_URL = "https://enterprise-ai-assistant-43az.onrender.com"
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
