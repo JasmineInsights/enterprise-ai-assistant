@@ -90,15 +90,22 @@ if ask and question:
         json={"question": question}
     )
 
-    data = res.json()
+    st.write("Status Code:", res.status_code)
+    st.write("Response Text:", res.text)
 
-    st.session_state.chat_history.append(
-        {
-            "q": question,
-            "a": data["answer"],
-            "s": data["sources"]
-        }
-    )
+    try:
+        data = res.json()
+
+        st.session_state.chat_history.append(
+            {
+                "q": question,
+                "a": data["answer"],
+                "s": data["sources"]
+            }
+        )
+
+    except Exception as e:
+        st.error(f"JSON Error: {e}")
 
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
