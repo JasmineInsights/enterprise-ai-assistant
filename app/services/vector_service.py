@@ -11,7 +11,7 @@ collection = client.get_or_create_collection(name="documents")
 # ---------- EMBEDDINGS ----------
 def get_embedding(text):
     result = genai.embed_content(
-        model="models/embedding-001",
+        model="models/gemini-embedding-001",
         content=text
     )
     return result["embedding"]
