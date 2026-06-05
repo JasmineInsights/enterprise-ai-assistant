@@ -62,15 +62,14 @@ with st.sidebar:
                     files=files
                 )
 
-                st.success("Upload Request Sent 🚀")
+                data = res.json()
 
-                st.write("Status Code:", res.status_code)
-                st.write("Response Text:", res.text)
+                st.success("Uploaded Successfully 🚀")
 
-                try:
-                    st.json(res.json())
-                except Exception as e:
-                    st.error(f"JSON Error: {e}")
+                st.json({
+                    "filename": data["filename"],
+                    "chunks_stored": data["chunks_stored"]
+                })
 
             except Exception as e:
                 st.error(f"Upload Error: {e}")
@@ -110,23 +109,15 @@ if ask and question:
             json={"question": question}
         )
 
-        st.write("Status Code:", res.status_code)
-        st.write("Response Text:", res.text)
+        data = res.json()
 
-        try:
-
-            data = res.json()
-
-            st.session_state.chat_history.append(
-                {
-                    "q": question,
-                    "a": data.get("answer", ""),
-                    "s": data.get("sources", [])
-                }
-            )
-
-        except Exception as e:
-            st.error(f"JSON Error: {e}")
+        st.session_state.chat_history.append(
+            {
+                "q": question,
+                "a": data.get("answer", ""),
+                "s": data.get("sources", [])
+            }
+        )
 
     except Exception as e:
         st.error(f"Request Error: {e}")
@@ -163,7 +154,7 @@ for chat in reversed(st.session_state.chat_history):
         ">
             <b style="color:#facc15;">📌 Sources:</b><br>
             <span style="color:#e2e8f0;">
-                {chat['s']}
+                {', '.join(chat['s'])}
             </span>
         </div>
 
