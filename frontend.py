@@ -59,20 +59,26 @@ with st.sidebar:
 
                 res = requests.post(
                     f"{API_URL}/upload",
-                    files=files
+                    files=files,
+                    timeout=60
                 )
 
-                data = res.json()
+                if res.status_code == 200:
 
-                st.success("Uploaded Successfully 🚀")
+                    data = res.json()
 
-                st.json({
-                    "filename": data["filename"],
-                    "chunks_stored": data["chunks_stored"]
-                })
+                    st.success("Uploaded Successfully 🚀")
 
-            except Exception as e:
-                st.error(f"Upload Error: {e}")
+                    st.json({
+                        "filename": data["filename"],
+                        "chunks_stored": data["chunks_stored"]
+                    })
+
+                else:
+                    st.error("Upload failed. Please try again.")
+
+            except Exception:
+                st.error("Upload failed. Please try again.")
 
 # ---------------- HEADER ----------------
 st.markdown(
@@ -106,21 +112,27 @@ if ask and question:
 
         res = requests.post(
             f"{API_URL}/chat",
-            json={"question": question}
+            json={"question": question},
+            timeout=120
         )
 
-        data = res.json()
+        if res.status_code == 200:
 
-        st.session_state.chat_history.append(
-            {
-                "q": question,
-                "a": data.get("answer", ""),
-                "s": data.get("sources", [])
-            }
-        )
+            data = res.json()
 
-    except Exception as e:
-        st.error(f"Request Error: {e}")
+            st.session_state.chat_history.append(
+                {
+                    "q": question,
+                    "a": data.get("answer", ""),
+                    "s": data.get("sources", [])
+                }
+            )
+
+        else:
+            st.error("Unable to get response from AI Assistant.")
+
+    except Exception:
+        st.error("Unable to get response from AI Assistant.")
 
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
