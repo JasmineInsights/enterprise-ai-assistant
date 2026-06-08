@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import html
 
 API_URL = "https://enterprise-ai-assistant-43az.onrender.com"
 
@@ -105,7 +106,6 @@ col1, col2 = st.columns([1, 5])
 with col1:
     ask = st.button("🚀 Ask")
 
-
 # ---------------- CHAT ----------------
 if ask and question:
 
@@ -123,17 +123,17 @@ if ask and question:
 
             st.session_state.chat_history.append(
                 {
-                    "q": question,
-                    "a": data.get("answer", ""),
+                    "q": html.escape(question),
+                    "a": html.escape(data.get("answer", "")),
                     "s": data.get("sources", [])
                 }
             )
 
         else:
-            st.error(f"Backend Error: {res.status_code}")
+            st.error("Unable to get response from AI Assistant.")
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+    except Exception:
+        st.error("Unable to get response from AI Assistant.")
 
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
