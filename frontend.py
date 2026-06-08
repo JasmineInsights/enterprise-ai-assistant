@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import html
 
 API_URL = "https://enterprise-ai-assistant-43az.onrender.com"
 
@@ -13,25 +12,17 @@ st.set_page_config(
 
 # ---------------- CUSTOM STYLE ----------------
 st.markdown("""
-    <style>
-    .main {
-        background-color: #0f172a;
-        color: white;
-    }
-    .stTextInput > div > div > input {
-        background-color: #1e293b;
-        color: white;
-    }
-    .stButton>button {
-        background-color: #2563eb;
-        color: white;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-    }
-    .block-container {
-        padding-top: 2rem;
-    }
-    </style>
+<style>
+.stButton > button {
+    background-color: #2563eb;
+    color: white;
+    border-radius: 8px;
+}
+
+.block-container {
+    padding-top: 2rem;
+}
+</style>
 """, unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
@@ -83,12 +74,20 @@ with st.sidebar:
 
 # ---------------- HEADER ----------------
 st.markdown(
-    "<h1 style='text-align: center; color: #38bdf8;'>🤖 Enterprise AI Assistant</h1>",
+    """
+    <h1 style='text-align:center;color:#38bdf8;'>
+        🤖 Enterprise AI Assistant
+    </h1>
+    """,
     unsafe_allow_html=True
 )
 
 st.markdown(
-    "<p style='text-align: center; color: #94a3b8;'>Chat with your documents using AI</p>",
+    """
+    <p style='text-align:center;color:#94a3b8;'>
+        Chat with your documents using AI
+    </p>
+    """,
     unsafe_allow_html=True
 )
 
@@ -96,18 +95,12 @@ st.markdown(
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# ---------------- INPUT BOX ----------------
+# ---------------- QUESTION INPUT ----------------
 question = st.text_input(
     "Ask anything from your documents..."
 )
 
-col1, col2 = st.columns([1, 5])
-
-with col1:
-    ask = st.button("🚀 Ask")
-
-# ---------------- CHAT ----------------
-if ask and question:
+if st.button("🚀 Ask") and question:
 
     try:
 
@@ -123,8 +116,8 @@ if ask and question:
 
             st.session_state.chat_history.append(
                 {
-                    "q": html.escape(question),
-                    "a": html.escape(data.get("answer", "")),
+                    "q": question,
+                    "a": data.get("answer", ""),
                     "s": data.get("sources", [])
                 }
             )
@@ -138,40 +131,14 @@ if ask and question:
 # ---------------- CHAT DISPLAY ----------------
 for chat in reversed(st.session_state.chat_history):
 
-    st.markdown(
-        f"""
-        <div style="
-            background-color:#1e293b;
-            padding:16px;
-            border-radius:12px;
-            margin-bottom:12px;
-            border:1px solid #334155;
-            color:#e2e8f0;
-        ">
+    with st.chat_message("user"):
+        st.write(chat["q"])
 
-        <div style="margin-bottom:10px;">
-            <b style="color:#38bdf8;">🧑 You:</b><br>
-            {chat['q']}
-        </div>
+    with st.chat_message("assistant"):
+        st.write(chat["a"])
 
-        <div style="margin-bottom:10px;">
-            <b style="color:#22c55e;">🤖 AI:</b><br>
-            {chat['a']}
-        </div>
-
-        <div style="
-            background-color:#0f172a;
-            padding:10px;
-            border-radius:8px;
-            border:1px solid #334155;
-        ">
-            <b style="color:#facc15;">📌 Sources:</b><br>
-            <span style="color:#e2e8f0;">
-                {', '.join(chat['s'])}
-            </span>
-        </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        if chat["s"]:
+            st.caption(
+                "📌 Sources: " +
+                ", ".join(chat["s"])
+            )
