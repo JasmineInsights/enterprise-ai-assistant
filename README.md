@@ -5,8 +5,7 @@ An AI-powered document intelligence application that allows users to upload PDF,
 ## 🌐 Live Demo
 
 **Frontend (Streamlit)**
-https://enterprise-ai-assistant-rxyrr7uq3b9wyxjcln7adg.streamlit.app/
-
+https://enterprise-ai-assistant-xr9bm23nko8fhuhjdjh7ix.streamlit.app/
 **Backend API (Render)**
 https://enterprise-ai-assistant-43az.onrender.com
 
